@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Category;
 import model.Session;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class Home {
         Button add = new Button("add");
         add.setOnAction(e -> {
             String name = enterName.getText();
-            System.out.println("Name entered: " + name);
+            Category.addCategory(name,null);
         });
 
         VBox layout = new VBox(10, enterName, add);

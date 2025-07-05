@@ -18,13 +18,18 @@ public class Category {
         tempId++;
         this.idcategory = tempId;
         Session.getSession().setMaxCategoryid(tempId);
-        String tempPath = parent.path + "/" + parent.idcategory;
+        String tempPath="";
+        if (parent != null){
+                tempPath = parent.path + "/" + parent.idcategory;
+            parent.isLeaf = false;
+        }else {
+            tempPath = "/" ;
+        }
         this.path = tempPath;
-        parent.isLeaf = false;
         this.isLeaf = true;
     }
 
-    public void addCategory(String name,Category parent){
+    public static void addCategory(String name,Category parent){
         Category tempCat = new Category(name,parent);
         Session.getSession().allCategory.add(tempCat);
     }
