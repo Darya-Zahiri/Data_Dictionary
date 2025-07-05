@@ -9,7 +9,7 @@ public class Session {
     public static Session session;
     public int maxCategoryid;
     public Category currentCategory;
-    ArrayList<Category> allCategory = new ArrayList<>();
+    public ArrayList<Category> allCategory = new ArrayList<>();
     public static Database database;
 
     private Session(){
