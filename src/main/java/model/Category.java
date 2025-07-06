@@ -18,6 +18,7 @@ public class Category {
         this.parent = parent;
         this.path = path;
         this.isLeaf = isLeaf;
+        button = new Button(this.name);
     }
     public void setName(String name){
         this.name = name;
@@ -73,7 +74,7 @@ public class Category {
         //add to data base
         Category tempCat = new Category(tempId,name,parent,tempPath,isLeaf);
         try {
-            Session.database.executeQueryWithoutResult("insert into category (idcategory,parent,path,name,is leaf) values (" + tempCat.idcategory + "," + tempCat.parent.idcategory + ",'" + tempCat.path + "','" + tempCat.name + "'," +tempCat.getLeaf()+ ");");
+            Session.database.executeQueryWithoutResult("insert into category (idcategory,parent,path,name,isleaf) values (" + tempCat.idcategory + "," + tempCat.parent.idcategory + ",'" + tempCat.path + "','" + tempCat.name + "'," +tempCat.getLeaf()+ ");");
         }catch (SQLException e){
             System.out.println(e.toString());
         }

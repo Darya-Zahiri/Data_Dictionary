@@ -47,7 +47,7 @@ public class Home {
                         int categoryId,isLeaf,parentid;
                         String path,name;
                         categoryId = categoryResultset.getInt("idcategory");
-                        isLeaf = categoryResultset.getInt("is leaf");
+                        isLeaf = categoryResultset.getInt("isleaf");
                         parentid = categoryResultset.getInt("parent");
                         Category parent = null;
                                 path = categoryResultset.getString("path");
@@ -84,13 +84,11 @@ public class Home {
             }else{
                 add.setText("add new category");
                 Session.getSession().currentCategory = Session.getSession().allCategory.get(0);
-                Session.getSession().currentCategory.button = new Button(Session.getSession().currentCategory.getName());
                 anchor.getChildren().add(Session.getSession().currentCategory.button);
                 Session.getSession().currentCategory.button.setOnAction(e -> {
                     for (Category index : Session.getSession().allCategory
                          ) {
                         if (index.getParent() == Session.getSession().currentCategory){
-                            index.button = new Button(index.getName());
                             anchor.getChildren().add(index.button);
                         }
                     }
