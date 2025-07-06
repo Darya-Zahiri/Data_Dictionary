@@ -9,15 +9,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Category;
 import model.Session;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home {
     Stage stage;
@@ -27,6 +33,8 @@ public class Home {
     private AnchorPane anchor;
     @FXML
     private Button add;
+    @FXML private
+    TreeView<Category> treeView;
 
     public void initialize(){
         if (Session.getSession().allCategory.size() == 0){
@@ -84,17 +92,33 @@ public class Home {
             }else{
                 add.setText("add new category");
                 Session.getSession().currentCategory = Session.getSession().allCategory.get(0);
-                anchor.getChildren().add(Session.getSession().currentCategory.button);
-                Session.getSession().currentCategory.button.setOnAction(e -> {
-                    for (Category index : Session.getSession().allCategory
-                         ) {
-                        if (index.getParent() == Session.getSession().currentCategory){
-                            anchor.getChildren().add(index.button);
-                        }
-                    }
-                });
             }
         }
+        Map<Integer, TreeItem<Category>> items = new HashMap<>();
+        for (Category c : Session.getSession().allCategory) {
+            items.put(c.getIdcategory(), new TreeItem<>(c));
+        }
+        // wire up parent/child relationships
+        TreeItem<Category> root = null;
+        for (Category c : Session.getSession().allCategory) {
+            TreeItem<Category> item = items.get(c.getIdcategory());
+            if (c.getParent() == null) {
+                root = item;               // or collect multiple roots under an “All” item
+            } else {
+                items.get(c.getParent().getIdcategory()).getChildren().add(item);
+            }
+        }
+        treeView.setRoot(root);
+        treeView.setShowRoot(true);
+
+        // listen for user clicks/selections
+        treeView.getSelectionModel().selectedItemProperty().addListener((obs, old, newlySelected) -> {
+            if (newlySelected != null) {
+                Category clicked = newlySelected.getValue();
+                Session.getSession().currentCategory = clicked;
+                // now you can do whatever you want when a category is selected…
+            }
+        });
     }
 
     public void setAdd(ActionEvent event) throws IOException {

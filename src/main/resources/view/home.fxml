@@ -3,8 +3,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.TreeView?>
 <AnchorPane fx:id="anchor" opacity="0.83" prefHeight="731.0" prefWidth="1120.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Home">
    <children>
       <Button fx:id="add" layoutX="1035.0" layoutY="27.0" mnemonicParsing="false" onAction="#setAdd" />
+      <TreeView fx:id="treeView"
+                layoutX="10" layoutY="10"
+                prefWidth="300" prefHeight="400"/>
    </children>
 </AnchorPane>

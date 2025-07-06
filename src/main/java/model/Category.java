@@ -65,7 +65,13 @@ public class Category {
         Session.getSession().setMaxCategoryid(tempId);
         String tempPath="";
         if (parent != null){
-            tempPath = parent.path + "/" + parent.idcategory;
+            if (parent.idcategory == 1){
+
+                tempPath = parent.path + parent.idcategory;
+            }else {
+
+                tempPath = parent.path + "/" + parent.idcategory;
+            }
             parent.isLeaf = false;
         }else {
             tempPath = "/" ;
@@ -82,5 +88,10 @@ public class Category {
         System.out.println(tempCat.getIdcategory());
 
     }
+    @Override
+    public String toString() {
+        return name;
+    }
+
 
 }
