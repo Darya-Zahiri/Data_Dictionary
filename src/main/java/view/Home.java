@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +26,7 @@ public class Home {
     @FXML
     private AnchorPane anchor;
     @FXML
-    private Button addFirst;
+    private Button add;
 
     public void initialize(){
         if (Session.getSession().allCategory.size() == 0){
@@ -45,20 +46,29 @@ public class Home {
                     while (categoryResultset.next()){
                         int categoryId,isLeaf,parentid;
                         String path,name;
-                        categoryId = categoryResultset.getInt("categoryid");
+                        categoryId = categoryResultset.getInt("idcategory");
                         isLeaf = categoryResultset.getInt("is leaf");
                         parentid = categoryResultset.getInt("parent");
                         Category parent = null;
                                 path = categoryResultset.getString("path");
                         name = categoryResultset.getString("name");
-                        for (Category index:Session.getSession().allCategory
-                             ) {
-                            if (index.getIdcategory() == parentid){
-                                parent = index;
-                                break;
+
+                        if (categoryId == parentid){
+                            parent = null;
+                        }else {
+                            for (Category index:Session.getSession().allCategory
+                            ) {
+                                if (index.getIdcategory() == parentid){
+                                    parent = index;
+                                    break;
+                                }
                             }
                         }
-                        Category category = new Category(name,parent);
+                        boolean bleaf = true;
+                        if (isLeaf == 0){
+                            bleaf = false;
+                        }
+                        Category category = new Category(categoryId,name,parent,path,bleaf);
                         category.setLeaf(isLeaf);
                         category.setName(name);
                         category.setPath(path);
@@ -69,18 +79,38 @@ public class Home {
             }catch (SQLException e) {
                 System.out.println(e.toString());
             }
-        }else {
-            addFirst.setDisable(true);
-            addFirst.setVisible(false);
+            if (Session.getSession().allCategory.size() == 0){
+                add.setText("add first category");
+            }else{
+                add.setText("add new category");
+                Session.getSession().currentCategory = Session.getSession().allCategory.get(0);
+                Session.getSession().currentCategory.button = new Button(Session.getSession().currentCategory.getName());
+                anchor.getChildren().add(Session.getSession().currentCategory.button);
+                Session.getSession().currentCategory.button.setOnAction(e -> {
+                    for (Category index : Session.getSession().allCategory
+                         ) {
+                        if (index.getParent() == Session.getSession().currentCategory){
+                            index.button = new Button(index.getName());
+                            anchor.getChildren().add(index.button);
+                        }
+                    }
+                });
+            }
         }
     }
 
-    public void setAddFirst(ActionEvent event) throws IOException {
+    public void setAdd(ActionEvent event) throws IOException {
         TextField enterName = new TextField("enter name");
         Button add = new Button("add");
         add.setOnAction(e -> {
             String name = enterName.getText();
-            Category.addCategory(name,null);
+            try {
+                Category.addCategory(name, Session.getSession().currentCategory);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Category added successfully!");
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to add category: " + ex.getMessage());
+            }
+
         });
 
         VBox layout = new VBox(10, enterName, add);
@@ -89,5 +119,12 @@ public class Home {
         stage.setScene(scene);
         stage.setTitle("Add Name");
         stage.show();
+    }
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
