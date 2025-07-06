@@ -15,6 +15,8 @@ import model.Category;
 import model.Session;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Home {
     Stage stage;
@@ -26,7 +28,48 @@ public class Home {
     private Button addFirst;
 
     public void initialize(){
-        if(Session.getSession().allCategory.size()!=0){
+        if (Session.getSession().allCategory.size() == 0){
+            ResultSet categoryResultset;
+            try {
+                categoryResultset=Session.database.executeQueryWithResult("select max(idcategory) from category;");
+                if(categoryResultset.next()) {
+                    Session.getSession().setMaxCategoryid(categoryResultset.getInt("max(idcategory)"));
+                }else {
+                    Session.getSession().setMaxCategoryid(0);
+                }
+                System.out.println("maxid="+Session.getSession().getMaxCategoryid());
+
+
+                categoryResultset=Session.database.executeQueryWithResult("select * from category;");
+                if (categoryResultset != null){
+                    while (categoryResultset.next()){
+                        int categoryId,isLeaf,parentid;
+                        String path,name;
+                        categoryId = categoryResultset.getInt("categoryid");
+                        isLeaf = categoryResultset.getInt("is leaf");
+                        parentid = categoryResultset.getInt("parent");
+                        Category parent = null;
+                                path = categoryResultset.getString("path");
+                        name = categoryResultset.getString("name");
+                        for (Category index:Session.getSession().allCategory
+                             ) {
+                            if (index.getIdcategory() == parentid){
+                                parent = index;
+                                break;
+                            }
+                        }
+                        Category category = new Category(name,parent);
+                        category.setLeaf(isLeaf);
+                        category.setName(name);
+                        category.setPath(path);
+                        category.setParent(parent);
+                        Session.getSession().allCategory.add(category);
+                    }
+                }
+            }catch (SQLException e) {
+                System.out.println(e.toString());
+            }
+        }else {
             addFirst.setDisable(true);
             addFirst.setVisible(false);
         }

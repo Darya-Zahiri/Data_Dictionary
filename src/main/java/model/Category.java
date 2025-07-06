@@ -27,6 +27,45 @@ public class Category {
         }
         this.path = tempPath;
         this.isLeaf = true;
+        //add to data base
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+    public String getName(){
+        return name;
+    }
+    public void setIdcategory(int id){
+        idcategory = id;
+    }
+    public int getIdcategory(){
+        return idcategory;
+    }
+    public void setParent(Category parent){
+        this.parent = parent;
+    }
+    public Category getParent(){
+        return parent;
+    }
+    public void setPath(String path){
+        this.path = path;
+    }
+    public String getPath(){
+        return path;
+    }
+    public void setLeaf(int leaf){
+        if (leaf == 1){
+            isLeaf = true;
+        }else {
+            isLeaf = false;
+        }
+    }
+    public int getLeaf(){
+        if (isLeaf){
+            return 1;
+        }else {
+            return 0;
+        }
     }
 
     public static void addCategory(String name,Category parent){
