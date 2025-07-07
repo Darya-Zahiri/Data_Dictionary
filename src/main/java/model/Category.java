@@ -80,7 +80,9 @@ public class Category {
             }
             Category tempCat = new Category(tempId,name,parent,tempPath,isLeaf,isData);
             try {
-                Session.database.executeQueryWithoutResult("insert into category (idcategory,parent,path,name,isleaf,isdata) values (" + tempCat.idcategory + "," + tempCat.parent.idcategory + ",'" + tempCat.path + "','" + tempCat.name + "'," +tempCat.getLeaf()+ "," +tempCat.isData+ ");");
+                Session.database.executeQueryWithoutResult("insert into category (idcategory,parent,path,name,isleaf,isdata) values " +
+                        "(" + tempCat.idcategory + "," + tempCat.parent.idcategory + ",'" + tempCat.path + "','" + tempCat.name +
+                        "'," +tempCat.getLeaf()+ "," +tempCat.isData+ ");");
             }catch (SQLException e){
                 System.out.println(e.toString());
             }

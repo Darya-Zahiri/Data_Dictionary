@@ -8,8 +8,10 @@ import java.util.ArrayList;
 public class Session {
     public static Session session;
     public int maxCategoryid;
+    public int maxDataid;
     public Category currentCategory;
     public ArrayList<Category> allCategory = new ArrayList<>();
+    public ArrayList<Data> allData = new ArrayList<>();
     public static Database database;
 
     private Session(){
