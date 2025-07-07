@@ -32,11 +32,16 @@ public class Home {
     private Button addCategory;
     @FXML
     private Button addData;
-    @FXML private
-    TreeView<Category> treeView;
+    @FXML
+    private Button seeData;
+    @FXML
+    private Label info;
+    @FXML
+    private TreeView<Category> treeView;
 
     public void initialize(){
        init_cat();
+       init_data();
     }
 
     public void setAddCategory(ActionEvent event) throws IOException {
@@ -110,6 +115,22 @@ public class Home {
         stage.setScene(scene);
         stage.setTitle("Add Data");
         stage.show();
+    }
+    public void setSeeData(ActionEvent event) throws IOException{
+        if (Session.getSession().currentCategory.isData()){
+            for (Data date:Session.session.allData
+            ) {
+                if (date.getCategory() == Session.getSession().currentCategory){
+                    info.setText("");
+                    String temp = info.getText();
+                    temp += "\n"+date.getName();
+                    info.setText(temp);
+                }
+            }
+        }else {
+            info.setText("");
+            info.setText("no data!");
+        }
     }
 
     public void init_cat(){
@@ -198,6 +219,51 @@ public class Home {
         });
     }
     public void init_data(){
+        if (Session.getSession().allData.size() == 0){
+            ResultSet dataResultset;
+            try {
+                dataResultset=Session.database.executeQueryWithResult("select max(iddata) from data;");
+                if(dataResultset.next()) {
+                    Session.getSession().maxDataid = dataResultset.getInt("max(iddata)");
+                }else {
+                    Session.getSession().maxDataid = 0;
+                }
+                System.out.println("maxdataid="+Session.getSession().maxDataid);
 
+
+                dataResultset=Session.database.executeQueryWithResult("select * from data;");
+                if (dataResultset != null){
+                    while (dataResultset.next()){
+                        int iddata,idcat,idparent;
+                        String des,name;
+                        iddata = dataResultset.getInt("iddata");
+                        idcat = dataResultset.getInt("idcategory");
+                        idparent = dataResultset.getInt("parent");
+                        des = dataResultset.getString("description");
+                        name = dataResultset.getString("name");
+                        Category tempCat = null;
+                        for (Category cat:Session.getSession().allCategory
+                             ) {
+                            if (cat.getIdcategory() == idcat){
+                                tempCat = cat;
+                                break;
+                            }
+                        }
+                        Data parent = null;
+                        for (Data dat:Session.getSession().allData
+                             ) {
+                            if (dat.getIdData() == idparent){
+                                parent = dat;
+                                break;
+                            }
+                        }
+                        Data data = new Data(iddata,tempCat,name,des,parent);
+                        Session.getSession().allData.add(data);
+                    }
+                }
+            }catch (SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
     }
 }

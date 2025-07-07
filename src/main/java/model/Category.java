@@ -92,6 +92,11 @@ public class Category {
         }
 
     }
+
+    public boolean isData() {
+        return isData;
+    }
+
     @Override
     public String toString() {
         return name;

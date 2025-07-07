@@ -65,7 +65,7 @@ public class Data {
             Data data = new Data(tempId,category,name,description,null);
              try {
                  Session.database.executeQueryWithoutResult("insert into data (iddata,idcategory,name,description,parent) " +
-                         "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +0+ ");");
+                         "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +1+ ");");
                 Session.getSession().allData.add(data);
              }catch (SQLException e){
                 System.out.println(e.toString());
