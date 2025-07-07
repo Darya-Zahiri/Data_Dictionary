@@ -6,16 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Category;
 import model.Session;
-import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
 
@@ -52,10 +48,11 @@ public class Home {
                 categoryResultset=Session.database.executeQueryWithResult("select * from category;");
                 if (categoryResultset != null){
                     while (categoryResultset.next()){
-                        int categoryId,isLeaf,parentid;
+                        int categoryId,isLeaf,isData,parentid;
                         String path,name;
                         categoryId = categoryResultset.getInt("idcategory");
                         isLeaf = categoryResultset.getInt("isleaf");
+                        isData = categoryResultset.getInt("isdata");
                         parentid = categoryResultset.getInt("parent");
                         Category parent = null;
                                 path = categoryResultset.getString("path");
@@ -73,14 +70,14 @@ public class Home {
                             }
                         }
                         boolean bleaf = true;
+                        boolean bdata = true;
                         if (isLeaf == 0){
                             bleaf = false;
                         }
-                        Category category = new Category(categoryId,name,parent,path,bleaf);
-                        category.setLeaf(isLeaf);
-                        category.setName(name);
-                        category.setPath(path);
-                        category.setParent(parent);
+                        if (isData == 0){
+                            bdata = false;
+                        }
+                        Category category = new Category(categoryId,name,parent,path,bleaf,bdata);
                         Session.getSession().allCategory.add(category);
                     }
                 }
@@ -124,10 +121,24 @@ public class Home {
     public void setAdd(ActionEvent event) throws IOException {
         TextField enterName = new TextField("enter name");
         Button add = new Button("add");
+        CheckBox isLeafCheck = new CheckBox("is this node leaf?");
+        CheckBox isDataCheck = new CheckBox("does this node have data?");
         add.setOnAction(e -> {
             String name = enterName.getText();
+            boolean isLeaf;
+            boolean isData;
+            if(isLeafCheck.isSelected()){
+                isLeaf = true;
+            }else {
+                isLeaf = false;
+            }
+            if(isDataCheck.isSelected()){
+                isData = true;
+            }else {
+                isData = false;
+            }
             try {
-                Category.addCategory(name, Session.getSession().currentCategory);
+                Category.addCategory(name, Session.getSession().currentCategory,isLeaf,isData);
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Category added successfully!");
             } catch (Exception ex) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to add category: " + ex.getMessage());
@@ -135,13 +146,14 @@ public class Home {
 
         });
 
-        VBox layout = new VBox(10, enterName, add);
+        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
         Scene scene = new Scene(layout, 300, 200);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Add Name");
         stage.show();
     }
+
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
