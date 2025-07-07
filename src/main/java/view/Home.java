@@ -117,11 +117,11 @@ public class Home {
         stage.show();
     }
     public void setSeeData(ActionEvent event) throws IOException{
+        info.setText("");
         if (Session.getSession().currentCategory.isData()){
             for (Data date:Session.session.allData
             ) {
                 if (date.getCategory() == Session.getSession().currentCategory){
-                    info.setText("");
                     String temp = info.getText();
                     temp += "\n"+date.getName();
                     info.setText(temp);
