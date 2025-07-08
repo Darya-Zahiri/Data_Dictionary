@@ -13,7 +13,7 @@
          <padding>
             <Insets top="15" right="10" bottom="15" left="15"/>
          </padding>
-         <TitledPane text="دسته‌بندی‌ها" expanded="true" collapsible="false">
+         <TitledPane text="دسته بندی ها" expanded="true" collapsible="false">
             <TreeView fx:id="treeView" prefWidth="220" />
          </TitledPane>
       </VBox>
@@ -26,7 +26,7 @@
             <Insets top="20" right="20" bottom="20" left="20"/>
          </padding>
          <Label text="عملیات" styleClass="label"/>
-         <Button fx:id="addCategory" text="➕ افزودن دسته‌بندی" onAction="#setAddCategory" maxWidth="180"/>
+         <Button fx:id="addCategory" text="➕افزودن دسته بندی" onAction="#setAddCategory" maxWidth="180"/>
          <Button fx:id="addData" text="📥 افزودن دیتا" onAction="#setAddData" maxWidth="180"/>
          <Button fx:id="seeData" text="📊 مشاهده دیتا" onAction="#setSeeData" maxWidth="180"/>
       </VBox>

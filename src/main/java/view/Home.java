@@ -70,7 +70,7 @@ public class Home {
             } catch (Exception ex) {
                 showAlert(Alert.AlertType.ERROR, "ارور", "کتگوری اضافه نشد!: " + ex.getMessage());
             }
-
+            refresh();
         });
 
         VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
@@ -270,5 +270,34 @@ public class Home {
                 System.out.println(e.toString());
             }
         }
+    }
+
+    public void refresh(){
+        info.setText("");
+        Map<Integer, TreeItem<Category>> items = new HashMap<>();
+        for (Category c : Session.getSession().allCategory) {
+            items.put(c.getIdcategory(), new TreeItem<>(c));
+        }
+        // wire up parent/child relationships
+        TreeItem<Category> root = null;
+        for (Category c : Session.getSession().allCategory) {
+            TreeItem<Category> item = items.get(c.getIdcategory());
+            if (c.getParent() == null) {
+                root = item;               // or collect multiple roots under an “All” item
+            } else {
+                items.get(c.getParent().getIdcategory()).getChildren().add(item);
+            }
+        }
+        treeView.setRoot(root);
+        treeView.setShowRoot(true);
+
+        // listen for user clicks/selections
+        treeView.getSelectionModel().selectedItemProperty().addListener((obs, old, newlySelected) -> {
+            if (newlySelected != null) {
+                Category clicked = newlySelected.getValue();
+                Session.getSession().currentCategory = clicked;
+                // now you can do whatever you want when a category is selected…
+            }
+        });
     }
 }
