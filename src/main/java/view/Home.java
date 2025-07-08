@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Category;
@@ -27,7 +28,7 @@ public class Home {
     Scene scene;
     Parent root;
     @FXML
-    private AnchorPane anchor;
+    private BorderPane anchor;
     @FXML
     private Button addCategory;
     @FXML
@@ -35,7 +36,7 @@ public class Home {
     @FXML
     private Button seeData;
     @FXML
-    private Label info;
+    private TextArea info;
     @FXML
     private TreeView<Category> treeView;
 
@@ -45,10 +46,10 @@ public class Home {
     }
 
     public void setAddCategory(ActionEvent event) throws IOException {
-        TextField enterName = new TextField("enter name");
-        Button add = new Button("add");
-        CheckBox isLeafCheck = new CheckBox("is this node leaf?");
-        CheckBox isDataCheck = new CheckBox("does this node have data?");
+        TextField enterName = new TextField("اسم را بنویسید");
+        Button add = new Button("اضافه کن");
+        CheckBox isLeafCheck = new CheckBox("آیا برگ است؟");
+        CheckBox isDataCheck = new CheckBox("آیا دیتا دارد؟");
         add.setOnAction(e -> {
             String name = enterName.getText();
             boolean isLeaf;
@@ -65,18 +66,20 @@ public class Home {
             }
             try {
                 Category.addCategory(name, Session.getSession().currentCategory,isLeaf,isData);
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Category added successfully!");
+                showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز", "کتگوری با موفقیت اضافه شد!");
             } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to add category: " + ex.getMessage());
+                showAlert(Alert.AlertType.ERROR, "ارور", "کتگوری اضافه نشد!: " + ex.getMessage());
             }
 
         });
 
         VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
         Scene scene = new Scene(layout, 300, 200);
+        scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
+
         Stage stage = new Stage();
         stage.setScene(scene);
-        stage.setTitle("Add category");
+        stage.setTitle("اضافه کردن کتگوری");
         stage.show();
     }
 
@@ -88,32 +91,34 @@ public class Home {
         alert.showAndWait();
     }
     public void setAddData(ActionEvent event) throws IOException{
-        TextField enterName = new TextField("enter name");
-        TextField enterDes = new TextField("enter description");
-        Button add = new Button("add");
+        TextField enterName = new TextField("اسم را بنویسید");
+        TextField enterDes = new TextField("توضیحات را بنویسید");
+        Button add = new Button("اضافه کن");
 
         add.setOnAction(e -> {
                 try {
                     String name = enterName.getText();
                     if (name == null){
-                        throw new IllegalArgumentException("name can not be null");
+                        throw new IllegalArgumentException("نام نمیتواند خالی باشد!");
                     }
                     String des = enterDes.getText();
                     Data.addData(Session.getSession().currentCategory,name,des);
 
-                    showAlert(Alert.AlertType.INFORMATION, "Success", "Category added successfully!");
+                    showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز!", "دیتا با موفقیت اضافه شد!");
                 }catch (Exception ex){
 
-                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to add category: " + ex.getMessage());
+                    showAlert(Alert.AlertType.ERROR, "ارور!", "دیتا اضافه نشد!: " + ex.getMessage());
                 }
 
             });
 
         VBox layout = new VBox(10, enterName,enterDes, add);
         Scene scene = new Scene(layout, 300, 200);
+        scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
+
         Stage stage = new Stage();
         stage.setScene(scene);
-        stage.setTitle("Add Data");
+        stage.setTitle("اضافه کردن دیتا");
         stage.show();
     }
     public void setSeeData(ActionEvent event) throws IOException{
@@ -129,7 +134,7 @@ public class Home {
             }
         }else {
             info.setText("");
-            info.setText("no data!");
+            info.setText("دیتایی وجود ندارد!");
         }
     }
 
