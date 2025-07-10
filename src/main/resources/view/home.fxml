@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="anchor" xmlns:fx="http://javafx.com/fxml" fx:controller="view.Home" stylesheets="@style.css">
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<BorderPane fx:id="anchor" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Home">
 
    <!-- LEFT: TreeView inside a titled section -->
    <left>
-      <VBox spacing="10" alignment="TOP_LEFT">
+      <VBox alignment="TOP_LEFT" spacing="10">
          <padding>
-            <Insets top="15" right="10" bottom="15" left="15"/>
+            <Insets bottom="15" left="15" right="10" top="15" />
          </padding>
-         <TitledPane text="دسته بندی ها" expanded="true" collapsible="false">
+         <TitledPane collapsible="false" expanded="true" text="دسته بندی ها" textAlignment="RIGHT">
             <TreeView fx:id="treeView" prefWidth="220" />
          </TitledPane>
       </VBox>
    </left>
 
-   <!-- RIGHT: Button actions panel with spacing and emphasis -->
-   <right>
-      <VBox spacing="12" alignment="TOP_CENTER">
-         <padding>
-            <Insets top="20" right="20" bottom="20" left="20"/>
-         </padding>
-         <Label text="عملیات" styleClass="label"/>
-         <Button fx:id="addCategory" text="➕افزودن دسته بندی" onAction="#setAddCategory" maxWidth="180"/>
-         <Button fx:id="addData" text="📥 افزودن دیتا" onAction="#setAddData" maxWidth="180"/>
-         <Button fx:id="seeData" text="📊 مشاهده دیتا" onAction="#setSeeData" maxWidth="180"/>
-      </VBox>
-   </right>
+   <!-- RIGHT: (Removed previous VBox with buttons) -->
+   <top>
+      <HBox spacing="0">
+      <Region HBox.hgrow="ALWAYS"/>
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+         <menus>
+            <Menu fx:id="menu" text="منو" mnemonicParsing="false">
+               <items>
+                  <MenuItem fx:id="addCategoryItem" text="اضافه کردن دسته بندی" />
+                  <MenuItem fx:id="addDataItem" text="اضافه کردن دیتا" />
+                  <MenuItem fx:id="seeDataItem" text="مشاهده دیتا" />
+                  <MenuItem fx:id="refreshItem" text="رفرش" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </HBox>
+   </top>
 
    <!-- CENTER: Main content/info panel -->
    <center>
-      <VBox spacing="15" alignment="TOP_LEFT">
+      <VBox alignment="TOP_LEFT" prefWidth="566.0" spacing="15">
          <padding>
-            <Insets top="25" right="25" bottom="25" left="25"/>
+            <Insets bottom="25" left="25" right="25" top="25" />
          </padding>
-         <Label text="اطلاعات انتخاب‌شده" styleClass="label"/>
-         <TextArea fx:id="info" wrapText="true" editable="false" prefHeight="300" />
+         <Label styleClass="label" text="اطلاعات انتخاب‌شده" />
+         <TextArea fx:id="info" editable="false" prefHeight="300" wrapText="true" />
       </VBox>
    </center>
 

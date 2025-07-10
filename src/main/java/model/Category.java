@@ -3,6 +3,7 @@ package model;
 import javafx.scene.control.Button;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class Category {
     int idcategory;
@@ -62,6 +63,14 @@ public class Category {
     }
 
     public static void addCategory(String name,Category parent,boolean isLeaf,boolean isData){
+        for (Category cat:Session.session.allCategory
+             ) {
+            if (cat.parent == parent){
+                if (Objects.equals(cat.name, name)){
+                    throw new IllegalArgumentException("نام تکراری است.");
+                }
+            }
+        }
         if (!parent.isLeaf){
             int tempId = Session.getSession().getMaxCategoryid();
             tempId++;
@@ -88,7 +97,7 @@ public class Category {
             }
             Session.getSession().allCategory.add(tempCat);
         }else {
-            throw new IllegalArgumentException("parent is leaf");
+            throw new IllegalArgumentException("پدر برگ است.");
         }
 
     }
