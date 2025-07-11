@@ -57,15 +57,15 @@ public class Data {
         this.parent = parent;
     }
 
-    public static void addData(Category category,String name,String description){
+    public static void addData(Category category,String name,String description,Data parent){
         if (category.isData){
             int tempId = Session.getSession().maxDataid;
             tempId++;
             Session.getSession().maxDataid = tempId;
-            Data data = new Data(tempId,category,name,description,null);
+            Data data = new Data(tempId,category,name,description,parent);
              try {
                  Session.database.executeQueryWithoutResult("insert into data (iddata,idcategory,name,description,parent) " +
-                         "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +1+ ");");
+                         "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +parent.idData+ ");");
                 Session.getSession().allData.add(data);
              }catch (SQLException e){
                 System.out.println(e.toString());
@@ -75,5 +75,8 @@ public class Data {
 
             throw new IllegalArgumentException("category doesnt have data");
         }
+    }
+    public String toString(){
+        return this.name;
     }
 }

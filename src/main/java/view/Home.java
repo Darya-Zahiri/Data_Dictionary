@@ -138,7 +138,25 @@ public class Home {
         TextField enterDes = new TextField("توضیحات را بنویسید");
         enterDes.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         Button add = new Button("اضافه کن");
+        ToggleGroup group = new ToggleGroup();
+        final Data[] parent = new Data[1];
+        VBox root = new VBox(10);
+        for (Data data : Session.session.allData) {
+            if(data.getCategory() == Session.session.currentCategory.getParent() ){
+                RadioButton radioButton = new RadioButton(data.toString());
+                radioButton.setToggleGroup(group);
+                radioButton.setOnAction(e -> {
+                    parent[0] = data;
+                });
+                root.getChildren().addAll(radioButton);
+            }
+        }
 
+        ScrollPane scrollPane = new ScrollPane(root);
+        Label title = new Label("پدر را انتخاب کنید.");
+        title.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(150);
         add.setOnAction(e -> {
                 try {
                     String name = enterName.getText();
@@ -146,7 +164,7 @@ public class Home {
                         throw new IllegalArgumentException("نام نمیتواند خالی باشد!");
                     }
                     String des = enterDes.getText();
-                    Data.addData(Session.getSession().currentCategory,name,des);
+                    Data.addData(Session.getSession().currentCategory,name,des, parent[0]);
 
                     showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز!", "دیتا با موفقیت اضافه شد!");
                 }catch (Exception ex){
@@ -156,8 +174,8 @@ public class Home {
                 initialize();
             });
 
-        VBox layout = new VBox(10, enterName,enterDes, add);
-        Scene scene = new Scene(layout, 300, 200);
+        VBox layout = new VBox(10, enterName, enterDes, title, scrollPane, add);
+        Scene scene = new Scene(layout, 300, 300);
         scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
 
         Stage stage = new Stage();

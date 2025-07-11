@@ -78,15 +78,23 @@
 
 .menu-item {
     -fx-text-fill: white;
-    -fx-background-color: #2b2b2b;
+    -fx-background-color: #0078d7;
 }
 .menu-item:hover {
-    -fx-background-color: #444444;
+    -fx-background-color: #3399ff;
 }
 .menu-bar, .menu, .menu-item {
     -fx-font-family: 'Vazir', 'Tahoma', sans-serif;
     -fx-font-size: 14px;
     -fx-text-fill: #eeeeee;
+    -fx-background-color: #2b2b2b;
+}
+.choice-box {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: white;
+    -fx-font-family: 'Vazir';
+}
+.scroll-pane {
     -fx-background-color: #2b2b2b;
 }
 
