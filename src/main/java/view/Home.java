@@ -55,7 +55,6 @@ public class Home {
     public void initialize() {
         init_cat();
         init_data();
-
         addCategoryItem.setOnAction(e -> {
             try {
                 setAddCategory(e);
@@ -201,7 +200,6 @@ public class Home {
         stage.setTitle("ویرایش کتگوری");
         stage.show();
     }
-
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -349,33 +347,61 @@ public class Home {
         }
         treeView.setRoot(root);
         treeView.setShowRoot(true);
-
         Platform.runLater(() -> treeView.requestFocus());
-
+        // listen for user clicks/selections
         treeView.getSelectionModel().selectedItemProperty().addListener((obs, old, newlySelected) -> {
             if (newlySelected != null) {
                 Category clicked = newlySelected.getValue();
                 Session.getSession().currentCategory = clicked;
+                // now you can do whatever you want when a category is selected…
             }
         });
-
         treeView.setOnKeyPressed(event -> {
+
+
             if (event.getCode() == KeyCode.ENTER) {
+
+
                 TreeItem<Category> selectedItem = treeView.getSelectionModel().getSelectedItem();
+
+
                 if (selectedItem != null) {
+
+
                     Category clicked = selectedItem.getValue();
+
+
                     Session.getSession().currentCategory = clicked;
+
+
                     if (selectedItem.isExpanded()){
 
+
+
+
+
                         selectedItem.setExpanded(false);
+
+
                     }else {
 
-                        selectedItem.setExpanded(true);
-                    }
-                }
-            }
-        });
 
+
+
+
+                        selectedItem.setExpanded(true);
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        });
     }
     public void init_data(){
         if (Session.getSession().allData.size() == 0){
