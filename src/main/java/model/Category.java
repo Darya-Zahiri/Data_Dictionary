@@ -10,8 +10,8 @@ public class Category {
     String name;
     Category parent;
     String path;
-    boolean isLeaf;
-    boolean isData;
+    public boolean isLeaf;
+    public boolean isData;
     public Button button;
 
     public Category(int idcategory,String name,Category parent,String path,boolean isLeaf,boolean isData){
@@ -100,6 +100,39 @@ public class Category {
             throw new IllegalArgumentException("پدر برگ است.");
         }
 
+    }
+    public static void editCategory(String name,Category parent,boolean isLeaf,boolean isData){
+        Category category = Session.session.currentCategory;
+        category.name = name;
+        category.parent = parent;
+        category.isLeaf = isLeaf;
+        int leaf = 0;
+        if (isLeaf){
+            leaf = 1;
+        }
+        category.isData =isData;
+        int data = 0;
+        if (isData){
+            data = 1;
+        }
+        String tempPath="";
+        if (parent != null){
+            if (parent.idcategory == 1){
+
+                tempPath = parent.path + parent.idcategory;
+            }else {
+
+                tempPath = parent.path + "/" + parent.idcategory;
+            }
+        }else {
+            tempPath = "/" ;
+        }
+        category.path = tempPath;
+        try {
+            Session.database.executeQueryWithoutResult("update category set parent='"+category.parent.idcategory+"', path='"+category.path+"' , name='"+category.name+"' , isleaf="+ leaf+" , isdata="+ data+" where (idcategory="+category.idcategory+");");
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
     }
 
     public boolean isData() {

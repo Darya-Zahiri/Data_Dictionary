@@ -1,5 +1,6 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -43,6 +45,7 @@ public class Home {
     @FXML
     private TreeView<Category> treeView;
     @FXML private MenuItem addCategoryItem;
+    @FXML private MenuItem updateCategoryItem;
     @FXML private MenuItem addDataItem;
     @FXML private MenuItem seeDataItem;
     @FXML private MenuItem refreshItem;
@@ -50,13 +53,19 @@ public class Home {
     Font farsiFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Vazir.ttf"), 16);
 
     public void initialize() {
-        System.out.println("Controller initialized!");
         init_cat();
         init_data();
 
         addCategoryItem.setOnAction(e -> {
             try {
                 setAddCategory(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        updateCategoryItem.setOnAction(e -> {
+            try {
+                setUpdateCategory(e);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -122,6 +131,55 @@ public class Home {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("اضافه کردن کتگوری");
+        stage.show();
+    }
+
+    public void setUpdateCategory(ActionEvent event) throws IOException {
+        TextField enterName = new TextField(Session.session.currentCategory.getName());
+        enterName.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        enterName.setFont(farsiFont);
+        Button add = new Button("به روز رسانی");
+        add.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        CheckBox isLeafCheck = new CheckBox("آیا برگ است؟");
+        if (Session.session.currentCategory.isLeaf){
+            isLeafCheck.setSelected(true);
+        }
+        isLeafCheck.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        CheckBox isDataCheck = new CheckBox("آیا دیتا دارد؟");
+        if (Session.session.currentCategory.isData){
+            isLeafCheck.setSelected(true);
+        }
+        isDataCheck.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        add.setOnAction(e -> {
+            String name = enterName.getText();
+            boolean isLeaf;
+            boolean isData;
+            if(isLeafCheck.isSelected()){
+                isLeaf = true;
+            }else {
+                isLeaf = false;
+            }
+            if(isDataCheck.isSelected()){
+                isData = true;
+            }else {
+                isData = false;
+            }
+            try {
+                Category.editCategory(name, Session.getSession().currentCategory,isLeaf,isData);
+                showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز", "کتگوری با موفقیت ویرایش شد!");
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "ارور", "کتگوری ویرایش نشد!: " + ex.getMessage());
+            }
+            initialize();
+        });
+
+        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
+        Scene scene = new Scene(layout, 300, 200);
+        scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
+
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("ویرایش کتگوری");
         stage.show();
     }
 
@@ -273,14 +331,32 @@ public class Home {
         treeView.setRoot(root);
         treeView.setShowRoot(true);
 
-        // listen for user clicks/selections
+        Platform.runLater(() -> treeView.requestFocus());
+
         treeView.getSelectionModel().selectedItemProperty().addListener((obs, old, newlySelected) -> {
             if (newlySelected != null) {
                 Category clicked = newlySelected.getValue();
                 Session.getSession().currentCategory = clicked;
-                // now you can do whatever you want when a category is selected…
             }
         });
+
+        treeView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                TreeItem<Category> selectedItem = treeView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    Category clicked = selectedItem.getValue();
+                    Session.getSession().currentCategory = clicked;
+                    if (selectedItem.isExpanded()){
+
+                        selectedItem.setExpanded(false);
+                    }else {
+
+                        selectedItem.setExpanded(true);
+                    }
+                }
+            }
+        });
+
     }
     public void init_data(){
         if (Session.getSession().allData.size() == 0){
@@ -329,8 +405,5 @@ public class Home {
                 System.out.println(e.toString());
             }
         }
-    }
-
-    public void init_menu() {
     }
 }
