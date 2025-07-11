@@ -150,6 +150,25 @@ public class Home {
             isLeafCheck.setSelected(true);
         }
         isDataCheck.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        ToggleGroup group = new ToggleGroup();
+        final Category[] parent = new Category[1];
+        VBox root = new VBox(10);
+        for (Category category : Session.session.allCategory) {
+            if(category != Session.session.currentCategory ){
+                RadioButton radioButton = new RadioButton(category.toString());
+                radioButton.setToggleGroup(group);
+                radioButton.setOnAction(e -> {
+                    parent[0] = category;
+                });
+                root.getChildren().addAll(radioButton);
+            }
+        }
+
+        ScrollPane scrollPane = new ScrollPane(root);
+        Label title = new Label("پدر را انتخاب کنید.");
+        title.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(150);
         add.setOnAction(e -> {
             String name = enterName.getText();
             boolean isLeaf;
@@ -165,7 +184,7 @@ public class Home {
                 isData = false;
             }
             try {
-                Category.editCategory(name, Session.getSession().currentCategory,isLeaf,isData);
+                Category.editCategory(name, parent[0],isLeaf,isData);
                 showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز", "کتگوری با موفقیت ویرایش شد!");
             } catch (Exception ex) {
                 showAlert(Alert.AlertType.ERROR, "ارور", "کتگوری ویرایش نشد!: " + ex.getMessage());
@@ -173,8 +192,8 @@ public class Home {
             initialize();
         });
 
-        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
-        Scene scene = new Scene(layout, 300, 200);
+        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, scrollPane, add);
+        Scene scene = new Scene(layout, 300, 300);
         scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
 
         Stage stage = new Stage();
