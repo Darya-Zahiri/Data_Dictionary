@@ -65,8 +65,15 @@ public class Data {
             Session.getSession().maxDataid = tempId;
             Data data = new Data(tempId,category,name,description,parent);
              try {
-                 Session.database.executeQueryWithoutResult("insert into data (iddata,idcategory,name,description,parent) " +
-                         "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +parent.idData+ ");");
+                 if (parent != null){
+
+                     Session.database.executeQueryWithoutResult("insert into data (iddata,idcategory,name,description,parent) " +
+                             "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +parent.idData+ ");");
+                 }else {
+
+                     Session.database.executeQueryWithoutResult("insert into data (iddata,idcategory,name,description,parent) " +
+                             "values (" + data.idData + "," + category.idcategory + ",'" + name + "','" + description + "'," +null+ ");");
+                 }
                 Session.getSession().allData.add(data);
              }catch (SQLException e){
                 System.out.println(e.toString());

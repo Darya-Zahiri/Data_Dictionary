@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Home {
     Stage stage;
@@ -208,8 +209,27 @@ public class Home {
         stage.show();
     }
     public void setDeleteCategory(ActionEvent event) throws IOException {
-        Category.deleteCategory();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("تایید حذف");
+        alert.setHeaderText("آیا مطمئن هستید؟");
+        alert.setContentText("در صورت حذف، کتگوری و فرزندان قابل بازیابی نیست!");
+
+        // Add custom buttons if needed (optional)
+        ButtonType yesButton = new ButtonType("بله", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("خیر", ButtonBar.ButtonData.NO);
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            Category.deleteCategory();
+            initialize(); // Refresh the view or data
+        } else {
+            // Optionally do something if the user cancels
+            System.out.println("حذف لغو شد.");
+        }
     }
+
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

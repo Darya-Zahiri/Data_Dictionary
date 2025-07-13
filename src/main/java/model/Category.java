@@ -143,18 +143,51 @@ public class Category {
                     Session.database.executeQueryWithoutResult("delete from data where (idcategory="+category.idcategory+");");
                     System.out.println(category.idcategory);
                 } catch (SQLException e) {
-                    System.out.println(e.toString());
+                    throw new RuntimeException(e.toString());
                 }
                 //delete data from all data
+                ArrayList<Data> remove_data = new ArrayList<>();
+                for (Data data:Session.session.allData
+                     ) {
+                    if (data.getCategory() == category){
+                        remove_data.add(data);
+                    }
+                }
+                Session.getSession().allData.removeAll(remove_data);
                 //delete category from database
+                try {
+                    Session.database.executeQueryWithoutResult("delete from category where (idcategory="+category.idcategory+");");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e.toString());
+                }
+
                 //delete category from all category
+                Session.getSession().allCategory.remove(category);
             }
         }
         //for deleted node
-        //delete data from database
-        //delete data from all data
-        //delete category from database
-        //delete category from all category
+        category = Session.session.currentCategory;
+        try {
+            //delete data from database
+            Session.database.executeQueryWithoutResult("delete from data where (idcategory="+category.idcategory+");");
+            //delete data from all data
+            ArrayList<Data> remove_data = new ArrayList<>();
+            for (Data data:Session.session.allData
+            ) {
+                if (data.getCategory() == Session.session.currentCategory){
+                    remove_data.add(data);
+                }
+            }
+            Session.getSession().allData.removeAll(remove_data);
+            //delete category from database
+            Session.database.executeQueryWithoutResult("delete from category where (idcategory="+category.idcategory+");");
+
+            //delete category from all category
+
+            Session.getSession().allCategory.remove(category);
+        }catch (SQLException e){
+            throw new RuntimeException(e.toString());
+        }
     }
 
     public boolean isData() {
@@ -185,7 +218,7 @@ public class Category {
         try {
             Session.database.executeQueryWithoutResult("update category set parent='"+category.parent.idcategory+"', path='"+category.path+"' where (idcategory="+category.idcategory+");");
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            throw new RuntimeException(e.toString());
         }
         for (Category child:Session.session.allCategory
              ) {
