@@ -10,6 +10,7 @@ public class Session {
     public int maxCategoryid;
     public int maxDataid;
     public Category currentCategory;
+    public Data currentData;
     public ArrayList<Category> allCategory = new ArrayList<>();
     public ArrayList<Data> allData = new ArrayList<>();
     public static Database database;

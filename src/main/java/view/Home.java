@@ -36,11 +36,7 @@ public class Home {
     @FXML
     private BorderPane anchor;
     @FXML
-    private Button addCategory;
-    @FXML
-    private Button addData;
-    @FXML
-    private Button seeData;
+    private ScrollPane showData;
     @FXML
     private TextArea info;
     @FXML
@@ -95,6 +91,7 @@ public class Home {
         });
 
         refreshItem.setOnAction(e -> initialize());
+        init_menu();
     }
 
 
@@ -289,20 +286,26 @@ public class Home {
         stage.show();
     }
     public void setSeeData(ActionEvent event) throws IOException{
-        info.setText("");
+
+        VBox vBox = new VBox(10);
         if (Session.getSession().currentCategory.isData()){
-            for (Data date:Session.session.allData
-            ) {
-                if (date.getCategory() == Session.getSession().currentCategory){
-                    String temp = info.getText();
-                    temp += "\n"+date.getName();
-                    info.setText(temp);
+            for (Data data:Session.session.allData) {
+                if (data.getCategory() == Session.getSession().currentCategory){
+                    System.out.println("in");
+                    ToggleGroup group = new ToggleGroup();
+                    RadioButton radioButton = new RadioButton(data.toString());
+                    radioButton.setToggleGroup(group);
+                    radioButton.setOnAction(e -> {
+                        Session.getSession().currentData = data;
+                    });
+                    vBox.getChildren().addAll(radioButton);
                 }
             }
         }else {
-            info.setText("");
-            info.setText("دیتایی وجود ندارد!");
+
         }
+        showData.setContent(vBox);
+        showData.setFitToWidth(true);
     }
 
     public void init_cat(){
@@ -480,5 +483,68 @@ public class Home {
                 System.out.println(e.toString());
             }
         }
+    }
+    public void init_menu(){
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem addCategoryItem_dy = new MenuItem("add");
+        addCategoryItem_dy.setOnAction(e -> {
+            try {
+                setAddCategory(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        MenuItem updateCategoryItem_dy = new MenuItem("update");
+        updateCategoryItem_dy.setOnAction(e -> {
+            try {
+                setUpdateCategory(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        deleteCategoryItem.setOnAction(e -> {
+            try {
+                setDeleteCategory(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        addDataItem.setOnAction(e -> {
+            try {
+                setAddData(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        seeDataItem.setOnAction(e -> {
+            try {
+                setSeeData(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        contextMenu.getItems().addAll(addCategoryItem_dy, updateCategoryItem_dy, deleteCategoryItem, addDataItem, seeDataItem);
+
+// Set custom cell factory
+        treeView.setCellFactory(tv -> {
+            TreeCell<Category> cell = new TreeCell<>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getName()); // Use Category name
+                }
+            };
+
+            cell.setOnContextMenuRequested(e -> {
+                if (!cell.isEmpty()) {
+                    treeView.getSelectionModel().select(cell.getTreeItem()); // ✅ this works now
+                    contextMenu.show(cell, e.getScreenX(), e.getScreenY());
+                }
+            });
+
+            return cell;
+        });
     }
 }

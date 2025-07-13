@@ -97,4 +97,7 @@
 .scroll-pane {
     -fx-background-color: #2b2b2b;
 }
+.radio-button {
+    -fx-text-fill: black;
+}
 
