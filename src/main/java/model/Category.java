@@ -3,6 +3,8 @@ package model;
 import javafx.scene.control.Button;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Category {
@@ -115,6 +117,38 @@ public class Category {
         if (isData){
             data = 1;
         }
+        try {
+            Session.database.executeQueryWithoutResult("update category set name='"+category.name+"' , isleaf="+ leaf+" , isdata="+ data+" where (idcategory="+category.idcategory+");");
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }
+        Category.checkParentRec(category,parent);
+    }
+    public static void deleteCategory(){
+        Category category = Session.session.currentCategory;
+        Session.session.allCategory.sort(Comparator.comparingInt(cat -> cat.path.length()));
+        int id = category.idcategory;
+        String sub = "/"+id+"/";
+        for (int i=Session.session.allCategory.size()-1;i>-1;i--){
+            category = Session.session.allCategory.get(i);
+            if (category.path.contains(sub)){
+                System.out.println(category.name);
+            }
+        }
+    }
+
+    public boolean isData() {
+        return isData;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+    public static void checkParentRec(Category category,Category parent){
+        if (category == null){
+            return;
+        }
         String tempPath="";
         if (parent != null){
             if (parent.idcategory == 1){
@@ -129,20 +163,16 @@ public class Category {
         }
         category.path = tempPath;
         try {
-            Session.database.executeQueryWithoutResult("update category set parent='"+category.parent.idcategory+"', path='"+category.path+"' , name='"+category.name+"' , isleaf="+ leaf+" , isdata="+ data+" where (idcategory="+category.idcategory+");");
+            Session.database.executeQueryWithoutResult("update category set parent='"+category.parent.idcategory+"', path='"+category.path+"' where (idcategory="+category.idcategory+");");
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
+        for (Category child:Session.session.allCategory
+             ) {
+            if (child.parent == category){
+                Category.checkParentRec(child,category);
+            }
+        }
     }
-
-    public boolean isData() {
-        return isData;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
 
 }

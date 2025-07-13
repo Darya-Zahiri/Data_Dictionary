@@ -37,6 +37,7 @@
                <items>
                   <MenuItem fx:id="addCategoryItem" text="اضافه کردن دسته بندی" />
                   <MenuItem fx:id="updateCategoryItem" text="ویرایش دسته بندی" />
+                  <MenuItem fx:id="deleteCategoryItem" text="حذف دسته بندی" />
                   <MenuItem fx:id="addDataItem" text="اضافه کردن دیتا" />
                   <MenuItem fx:id="seeDataItem" text="مشاهده دیتا" />
                   <MenuItem fx:id="refreshItem" text="رفرش" />

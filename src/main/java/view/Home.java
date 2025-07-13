@@ -49,6 +49,7 @@ public class Home {
     @FXML private MenuItem addDataItem;
     @FXML private MenuItem seeDataItem;
     @FXML private MenuItem refreshItem;
+    @FXML private MenuItem deleteCategoryItem;
 
     Font farsiFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Vazir.ttf"), 16);
 
@@ -69,7 +70,13 @@ public class Home {
                 ex.printStackTrace();
             }
         });
-
+        deleteCategoryItem.setOnAction(e -> {
+            try {
+                setDeleteCategory(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         addDataItem.setOnAction(e -> {
             try {
                 setAddData(e);
@@ -199,6 +206,9 @@ public class Home {
         stage.setScene(scene);
         stage.setTitle("ویرایش کتگوری");
         stage.show();
+    }
+    public void setDeleteCategory(ActionEvent event) throws IOException {
+        Category.deleteCategory();
     }
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
