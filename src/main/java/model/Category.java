@@ -105,8 +105,13 @@ public class Category {
     }
     public static void editCategory(String name,Category parent,boolean isLeaf,boolean isData){
         Category category = Session.session.currentCategory;
-        category.name = name;
-        category.parent = parent;
+        if (name != null){
+            category.name = name;
+        }
+        if (parent != null){
+            category.parent = parent;
+            Category.checkParentRec(category,parent);
+        }
         category.isLeaf = isLeaf;
         int leaf = 0;
         if (isLeaf){
@@ -122,19 +127,34 @@ public class Category {
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
-        Category.checkParentRec(category,parent);
     }
     public static void deleteCategory(){
         Category category = Session.session.currentCategory;
         Session.session.allCategory.sort(Comparator.comparingInt(cat -> cat.path.length()));
         int id = category.idcategory;
-        String sub = "/"+id+"/";
+        String sub_1 = "/"+id+"/";
+        String sub_2 = "/"+id;
+        System.out.println(sub_1);
         for (int i=Session.session.allCategory.size()-1;i>-1;i--){
             category = Session.session.allCategory.get(i);
-            if (category.path.contains(sub)){
-                System.out.println(category.name);
+            if (category.path.contains(sub_1)||category.path.endsWith(sub_2)){
+                //delete data from database
+                try {
+                    Session.database.executeQueryWithoutResult("delete from data where (idcategory="+category.idcategory+");");
+                    System.out.println(category.idcategory);
+                } catch (SQLException e) {
+                    System.out.println(e.toString());
+                }
+                //delete data from all data
+                //delete category from database
+                //delete category from all category
             }
         }
+        //for deleted node
+        //delete data from database
+        //delete data from all data
+        //delete category from database
+        //delete category from all category
     }
 
     public boolean isData() {
