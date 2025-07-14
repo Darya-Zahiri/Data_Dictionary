@@ -578,7 +578,7 @@ public class Home {
     }
     public void init_menu(){
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem addCategoryItem_dy = new MenuItem("add");
+        MenuItem addCategoryItem_dy = new MenuItem("افزودن دسته بندی");
         addCategoryItem_dy.setOnAction(e -> {
             try {
                 setAddCategory(e);
@@ -586,7 +586,7 @@ public class Home {
                 ex.printStackTrace();
             }
         });
-        MenuItem updateCategoryItem_dy = new MenuItem("update");
+        MenuItem updateCategoryItem_dy = new MenuItem("ویرایش دسته بندی");
         updateCategoryItem_dy.setOnAction(e -> {
             try {
                 setUpdateCategory(e);
@@ -594,22 +594,24 @@ public class Home {
                 ex.printStackTrace();
             }
         });
-        deleteCategoryItem.setOnAction(e -> {
+        MenuItem deleteCategoryItem_dy = new MenuItem("حذف دسته بندی");
+        deleteCategoryItem_dy.setOnAction(e -> {
             try {
                 setDeleteCategory(e);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
-        addDataItem.setOnAction(e -> {
+        MenuItem addDataItem_dy = new MenuItem("افزودن دیتا");
+        addDataItem_dy.setOnAction(e -> {
             try {
                 setAddData(e);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
-
-        seeDataItem.setOnAction(e -> {
+        MenuItem seeDataItem_dy = new MenuItem("مشاهده دیتا");
+        seeDataItem_dy.setOnAction(e -> {
             try {
                 setSeeData(e);
             } catch (IOException ex) {
@@ -617,7 +619,7 @@ public class Home {
             }
         });
 
-        contextMenu.getItems().addAll(addCategoryItem_dy, updateCategoryItem_dy, deleteCategoryItem, addDataItem, seeDataItem);
+        contextMenu.getItems().addAll(addCategoryItem_dy, updateCategoryItem_dy, deleteCategoryItem_dy,addDataItem_dy ,seeDataItem_dy );
 
 // Set custom cell factory
         treeView.setCellFactory(tv -> {
