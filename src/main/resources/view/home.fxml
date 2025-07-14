@@ -32,22 +32,34 @@
    <top>
       <HBox spacing="0">
       <Region HBox.hgrow="ALWAYS" />
-      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
-         <menus>
-            <Menu fx:id="menu" mnemonicParsing="false" text="منو">
-               <items>
-                  <MenuItem fx:id="addCategoryItem" text="اضافه کردن دسته بندی" />
-                  <MenuItem fx:id="updateCategoryItem" text="ویرایش دسته بندی" />
-                  <MenuItem fx:id="deleteCategoryItem" text="حذف دسته بندی" />
-                  <MenuItem fx:id="addDataItem" text="اضافه کردن دیتا" />
-                  <MenuItem fx:id="seeDataItem" text="مشاهده دیتا" />
-                  <MenuItem fx:id="editDataItem" text="ویرایش دیتا" />
-                  <MenuItem fx:id="refreshItem" text="رفرش" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
-   </HBox>
+         <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+            <menus>
+               <Menu fx:id="mainMenu" mnemonicParsing="false" text="منو">
+                  <items>
+                     <!-- Submenu: دسته‌بندی‌ها -->
+                     <Menu text="دسته‌بندی‌ها">
+                        <items>
+                           <MenuItem fx:id="addCategoryItem" text="اضافه کردن دسته بندی" />
+                           <MenuItem fx:id="updateCategoryItem" text="ویرایش دسته بندی" />
+                           <MenuItem fx:id="deleteCategoryItem" text="حذف دسته بندی" />
+                        </items>
+                     </Menu>
+
+                     <!-- Submenu: دیتا -->
+                     <Menu text="دیتا">
+                        <items>
+                           <MenuItem fx:id="addDataItem" text="اضافه کردن دیتا" />
+                           <MenuItem fx:id="seeDataItem" text="مشاهده دیتا" />
+                           <MenuItem fx:id="editDataItem" text="ویرایش دیتا" />
+                           <MenuItem fx:id="refreshItem" text="رفرش" />
+                        </items>
+                     </Menu>
+                  </items>
+               </Menu>
+            </menus>
+         </MenuBar>
+
+      </HBox>
    </top>
 
    <!-- CENTER: Main content/info panel -->
