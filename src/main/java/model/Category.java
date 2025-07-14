@@ -125,7 +125,7 @@ public class Category {
         try {
             Session.database.executeQueryWithoutResult("update category set name='"+category.name+"' , isleaf="+ leaf+" , isdata="+ data+" where (idcategory="+category.idcategory+");");
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            throw new RuntimeException(e.toString());
         }
     }
     public static void deleteCategory(){
@@ -216,7 +216,7 @@ public class Category {
         }
         category.path = tempPath;
         try {
-            Session.database.executeQueryWithoutResult("update category set parent='"+category.parent.idcategory+"', path='"+category.path+"' where (idcategory="+category.idcategory+");");
+            Session.database.executeQueryWithoutResult("update category set parent="+category.parent.idcategory+", path='"+category.path+"' where (idcategory="+category.idcategory+");");
         } catch (SQLException e) {
             throw new RuntimeException(e.toString());
         }

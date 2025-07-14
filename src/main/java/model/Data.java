@@ -84,6 +84,39 @@ public class Data {
             throw new IllegalArgumentException("category doesnt have data");
         }
     }
+    public static void editData(Category category,String name,String description,Data parent) throws SQLException {
+        //in view we have checked the parent for having data
+        Data data = Session.getSession().currentData;
+        if (category != null){
+            data.category = category;
+            try {
+                Session.database.executeQueryWithoutResult("update data set idcategory="+ data.category.idcategory+" where (iddata="+ data.idData +");");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        data.name = name;
+        data.description = description;
+        try {
+            Session.database.executeQueryWithoutResult("update data set name='"+ name +"', description='"+ description +"' where (iddata="+ data.idData +");");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (parent != null){
+            data.parent = parent;
+            try {
+                Session.database.executeQueryWithoutResult("update data set parent="+ parent.idData +" where (iddata="+ data.idData +");");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }else {
+            data.parent = null;
+            Session.database.executeQueryWithoutResult("update data set parent="+ null +" where (iddata="+ data.idData +");");
+
+        }
+
+    }
     public String toString(){
         return this.name;
     }

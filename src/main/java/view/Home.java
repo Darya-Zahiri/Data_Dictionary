@@ -45,6 +45,7 @@ public class Home {
     @FXML private MenuItem updateCategoryItem;
     @FXML private MenuItem addDataItem;
     @FXML private MenuItem seeDataItem;
+    @FXML private MenuItem editDataItem;
     @FXML private MenuItem refreshItem;
     @FXML private MenuItem deleteCategoryItem;
 
@@ -89,7 +90,13 @@ public class Home {
                 ex.printStackTrace();
             }
         });
-
+        editDataItem.setOnAction(e -> {
+            try {
+                setEditData(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         refreshItem.setOnAction(e -> initialize());
         init_menu();
     }
@@ -306,6 +313,83 @@ public class Home {
         }
         showData.setContent(vBox);
         showData.setFitToWidth(true);
+    }
+    public void setEditData(ActionEvent event) throws IOException{
+        Data data = Session.getSession().currentData;
+        TextField enterName = new TextField(data.getName());
+        enterName.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        TextField enterDes = new TextField(data.getDescription());
+        enterDes.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        Button add = new Button("ویرایش کن");
+        Button choose = new Button("انتخاب کتگوری");
+        ToggleGroup group = new ToggleGroup();
+        final Category[] category = new Category[1];
+        VBox root1 = new VBox(10);
+        for (Category cat : Session.session.allCategory) {
+                RadioButton radioButton = new RadioButton(cat.toString());
+                radioButton.setToggleGroup(group);
+                radioButton.setOnAction(e -> {
+                    category[0] = cat;
+                });
+                root1.getChildren().addAll(radioButton);
+        }
+
+        ScrollPane scrollPane1 = new ScrollPane(root1);
+        Label title = new Label("کتگوری را انتخاب کنید.");
+        title.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        scrollPane1.setFitToWidth(true);
+        scrollPane1.setPrefHeight(150);
+
+
+        VBox root2 = new VBox(10);
+        final Data[] parent = new Data[1];
+        choose.setOnAction(e ->{
+            root2.getChildren().clear();
+            ToggleGroup group1 = new ToggleGroup();
+            for (Data dataa : Session.session.allData) {
+                if(dataa.getCategory() == category[0]){
+                    RadioButton radioButton = new RadioButton(dataa.toString());
+                    radioButton.setToggleGroup(group);
+                    radioButton.setOnAction(ex -> {
+                        parent[0] = dataa;
+                    });
+                    root2.getChildren().addAll(radioButton);
+                }
+            }
+
+
+        });
+
+        ScrollPane scrollPane2 = new ScrollPane(root2);
+        Label title2 = new Label("پدر را انتخاب کنید.");
+        title.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        scrollPane2.setFitToWidth(true);
+        scrollPane2.setPrefHeight(150);
+        add.setOnAction(e -> {
+            try {
+                String name = enterName.getText();
+                if (name == null){
+                    throw new IllegalArgumentException("نام نمیتواند خالی باشد!");
+                }
+                String des = enterDes.getText();
+                Data.addData(Session.getSession().currentCategory,name,des, parent[0]);
+
+                showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز!", "دیتا با موفقیت اضافه شد!");
+            }catch (Exception ex){
+
+                showAlert(Alert.AlertType.ERROR, "ارور!", "دیتا اضافه نشد!: " + ex.getMessage());
+            }
+            initialize();
+        });
+
+        VBox layout = new VBox(10, enterName, enterDes, title, scrollPane1, choose, title2, scrollPane2, add);
+        Scene scene = new Scene(layout, 300, 400);
+        scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
+
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("اضافه کردن دیتا");
+        stage.show();
     }
 
     public void init_cat(){
