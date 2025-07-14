@@ -343,18 +343,26 @@ public class Home {
 
         VBox root2 = new VBox(10);
         final Data[] parent = new Data[1];
+
         choose.setOnAction(e ->{
-            root2.getChildren().clear();
-            ToggleGroup group1 = new ToggleGroup();
-            for (Data dataa : Session.session.allData) {
-                if(dataa.getCategory() == category[0]){
-                    RadioButton radioButton = new RadioButton(dataa.toString());
-                    radioButton.setToggleGroup(group);
-                    radioButton.setOnAction(ex -> {
-                        parent[0] = dataa;
-                    });
-                    root2.getChildren().addAll(radioButton);
+            try {
+                if (!category[0].isData) {
+                    throw new IllegalArgumentException("کتگوری دیتا ندارد!");
                 }
+                root2.getChildren().clear();
+                ToggleGroup group1 = new ToggleGroup();
+                for (Data dataa : Session.session.allData) {
+                    if(dataa.getCategory() == category[0]){
+                        RadioButton radioButton = new RadioButton(dataa.toString());
+                        radioButton.setToggleGroup(group);
+                        radioButton.setOnAction(ex -> {
+                            parent[0] = dataa;
+                        });
+                        root2.getChildren().addAll(radioButton);
+                    }
+                }
+            }catch (Exception ex){
+                showAlert(Alert.AlertType.ERROR, "ارور!", "کتگوری انتخاب نشد!: " + ex.getMessage());
             }
 
 
@@ -372,7 +380,7 @@ public class Home {
                     throw new IllegalArgumentException("نام نمیتواند خالی باشد!");
                 }
                 String des = enterDes.getText();
-                Data.addData(Session.getSession().currentCategory,name,des, parent[0]);
+                Data.editData(category[0],name,des,parent[0]);
 
                 showAlert(Alert.AlertType.INFORMATION, "موفقیت آمیز!", "دیتا با موفقیت اضافه شد!");
             }catch (Exception ex){
