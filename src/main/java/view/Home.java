@@ -134,9 +134,11 @@ public class Home {
             }
             initialize();
         });
+        String path = String.valueOf(pathMaker());
+        Label show_path = new Label(path);
 
-        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, add);
-        Scene scene = new Scene(layout, 300, 200);
+        VBox layout = new VBox(10, show_path, enterName, isLeafCheck, isDataCheck, add);
+        Scene scene = new Scene(layout, 400, 300);
         scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
 
         Stage stage = new Stage();
@@ -166,12 +168,15 @@ public class Home {
         VBox root = new VBox(10);
         for (Category category : Session.session.allCategory) {
             if(category != Session.session.currentCategory ){
-                RadioButton radioButton = new RadioButton(category.toString());
-                radioButton.setToggleGroup(group);
-                radioButton.setOnAction(e -> {
-                    parent[0] = category;
-                });
-                root.getChildren().addAll(radioButton);
+                if (!(category.getPath().contains("/"+Session.getSession().currentCategory.getIdcategory()+"/"))&
+                        !(category.getPath().endsWith("/"+Session.getSession().currentCategory.getIdcategory()))){
+                    RadioButton radioButton = new RadioButton(category.toString());
+                    radioButton.setToggleGroup(group);
+                    radioButton.setOnAction(e -> {
+                        parent[0] = category;
+                    });
+                    root.getChildren().addAll(radioButton);
+                }
             }
         }
 
@@ -202,9 +207,10 @@ public class Home {
             }
             initialize();
         });
-
-        VBox layout = new VBox(10, enterName,isLeafCheck,isDataCheck, scrollPane, add);
-        Scene scene = new Scene(layout, 300, 300);
+        String path = String.valueOf(pathMaker());
+        Label show_path = new Label(path);
+        VBox layout = new VBox(10, show_path, enterName,isLeafCheck,isDataCheck, scrollPane, add);
+        Scene scene = new Scene(layout, 400, 300);
         scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
 
         Stage stage = new Stage();
@@ -219,10 +225,11 @@ public class Home {
         alert.setContentText("در صورت حذف، کتگوری و فرزندان قابل بازیابی نیست!");
 
         // Add custom buttons if needed (optional)
-        ButtonType yesButton = new ButtonType("بله", ButtonBar.ButtonData.YES);
-        ButtonType noButton = new ButtonType("خیر", ButtonBar.ButtonData.NO);
 
-        alert.getButtonTypes().setAll(yesButton, noButton);
+        ButtonType noButton = new ButtonType("خیر", ButtonBar.ButtonData.OK_DONE);
+        ButtonType yesButton = new ButtonType("بله", ButtonBar.ButtonData.NO);
+
+        alert.getButtonTypes().setAll(noButton, yesButton);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
@@ -282,9 +289,10 @@ public class Home {
                 }
                 initialize();
             });
-
-        VBox layout = new VBox(10, enterName, enterDes, title, scrollPane, add);
-        Scene scene = new Scene(layout, 300, 300);
+        String path = String.valueOf(pathMaker());
+        Label show_path = new Label(path);
+        VBox layout = new VBox(10, show_path, enterName, enterDes, title, scrollPane, add);
+        Scene scene = new Scene(layout, 400, 300);
         scene.getStylesheets().add(getClass().getResource("/view/style.css").toExternalForm());
 
         Stage stage = new Stage();
@@ -396,7 +404,7 @@ public class Home {
 
         Stage stage = new Stage();
         stage.setScene(scene);
-        stage.setTitle("اضافه کردن دیتا");
+        stage.setTitle("ویرایش کردن دیتا");
         stage.show();
     }
 
@@ -640,5 +648,33 @@ public class Home {
 
             return cell;
         });
+    }
+    /**
+     * makes numeric path to a path with names of categories.
+     *
+     */
+    public StringBuilder pathMaker(){
+        String num_path = Session.getSession().currentCategory.getPath();
+        String[] arr = num_path.split("/");
+        if (arr.length>0){
+            arr[0] = "0";
+        }
+        StringBuilder answer = new StringBuilder();
+        for (String index : arr
+             ) {
+            for (Category cat:Session.session.allCategory
+                 ) {
+                if (Integer.parseInt(index) == cat.getIdcategory()){
+                    answer.append("/");
+                    answer.append(cat.getName());
+                }
+
+            }
+        }
+        answer.append("/");
+        answer.append(Session.getSession().currentCategory.getName());
+        answer.append("/");
+        System.out.println(answer);
+        return answer;
     }
 }
