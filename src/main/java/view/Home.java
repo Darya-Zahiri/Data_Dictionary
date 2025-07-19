@@ -303,7 +303,7 @@ public class Home {
     public void setSeeData(ActionEvent event) throws IOException{
 
         VBox vBox = new VBox(10);
-        if (Session.getSession().currentCategory.isData()){
+        if (Session.getSession().currentCategory.getIsData()){
             for (Data data:Session.session.allData) {
                 if (data.getCategory() == Session.getSession().currentCategory){
                     System.out.println("in");
@@ -654,27 +654,28 @@ public class Home {
      *
      */
     public StringBuilder pathMaker(){
-        String num_path = Session.getSession().currentCategory.getPath();
-        String[] arr = num_path.split("/");
-        if (arr.length>0){
-            arr[0] = "0";
-        }
         StringBuilder answer = new StringBuilder();
-        for (String index : arr
-             ) {
-            for (Category cat:Session.session.allCategory
-                 ) {
-                if (Integer.parseInt(index) == cat.getIdcategory()){
-                    answer.append("/");
-                    answer.append(cat.getName());
-                }
-
+        if (Session.getSession().currentCategory != null){
+            String num_path = Session.getSession().currentCategory.getPath();
+            String[] arr = num_path.split("/");
+            if (arr.length>0){
+                arr[0] = "0";
             }
+            for (String index : arr
+            ) {
+                for (Category cat:Session.session.allCategory
+                ) {
+                    if (Integer.parseInt(index) == cat.getIdcategory()){
+                        answer.append("/");
+                        answer.append(cat.getName());
+                    }
+
+                }
+            }
+            answer.append("/");
+            answer.append(Session.getSession().currentCategory.getName());
+            answer.append("/");
         }
-        answer.append("/");
-        answer.append(Session.getSession().currentCategory.getName());
-        answer.append("/");
-        System.out.println(answer);
         return answer;
     }
 }
